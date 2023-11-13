@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { Box, Flex, Text ,Image} from "@chakra-ui/react";
-import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import "./Both.css";
 import { useDispatch,useSelector } from "react-redux";
@@ -14,6 +12,7 @@ import { Link} from "react-router-dom";
 
 const RoomAdd = () => {
 
+  
   const dispatch = useDispatch();
   useEffect(() => {
     // getData(typeOfProduct).then((res) => setProductArr(res));
@@ -21,8 +20,6 @@ const RoomAdd = () => {
   }, []);
   
   const data = useSelector((store) => store.job.data);
-  console.log(data.length)
-  const jobList=data.slice(data.length-3,data.length);
   const [passShow, setPassShow] = useState(false);
   const [cpassShow, setCPassShow] = useState(false);
   const navigate = useNavigate();
@@ -30,109 +27,67 @@ const RoomAdd = () => {
   // =============================================================================================================
 
   const accessToken = JSON.parse(localStorage.getItem("data")).access_token;
+  const [jobName, setJObName] = useState("");
   const [roomName, setRoomName] = useState("");
   const [roomSkill, setRoomSkill] = useState("");
   const [roomDescription, setRoomDescription] = useState("");
-  const [startDate, setLocation] = useState("");
+  const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [linkmeet, setLinkmeet] = useState("");
-  const [workingForm, setWorkingForm] = useState("");
-  const [sex, setSex] = useState("");
-  const [experience, setExperience] = useState("");
-  const [detailLocation, setDetailLocation] = useState("");
-  const [detailJob, setDetailJob] = useState("");
-  const [requirements, setRequirements] = useState("");
-  const [interest, setInterest] = useState("");
-  const [image, setImage] = useState("");
+ 
   const handleSubmit2 = async (e) => {
 
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (name === "") {
-      toast.warning("name is required!", {
+    if (jobName === "") {
+      toast.warning("Job is required!", {
         position: "top-center",
       });
-    } else if (position === "") {
-      toast.error("position is required!", {
+    }
+    else if (roomName === "") {
+      toast.warning("room Name is required!", {
+        position: "top-center",
+      });
+    } else if (roomSkill === "") {
+      toast.error("room Skill is required!", {
         position: "top-center",
       });
     } 
-    else if (salary === "") {
-      toast.error("salary is required!", {
+    else if (roomDescription === "") {
+      toast.error("room Description is required!", {
         position: "top-center",
       });
     }
-    else if (workingForm === "") {
-      toast.error("workingForm is required!", {
+    else if (startDate === "") {
+      toast.error("start Date is required!", {
         position: "top-center",
       });
     }
-    else if (location === "") {
-      toast.error("location is required!", {
+    else if (endDate === "") {
+      toast.error("end Date is required!", {
         position: "top-center",
       });
     }
-    else if (language === "") {
-      toast.error("language is required!", {
-        position: "top-center",
-      });
-    }   else if (sex === "") {
-      toast.error("sex is required!", {
-        position: "top-center",
-      });
-    }   else if (number === "") {
-      toast.error("number is required!", {
-        position: "top-center",
-      });
-    }   else if (detailLocation === "") {
-      toast.error("detailLocation is required!", {
-        position: "top-center",
-      });
-    }
-    else if (experience === "") {
-      toast.error("experience is required!", {
-        position: "top-center",
-      });
-    }  else if (detailJob === "") {
-      toast.error("detailJob is required!", {
-        position: "top-center",
-      });
-    }  else if (requirements === "") {
-      toast.error("requirements is required!", {
-        position: "top-center",
-      });
-    }  else if (interest === "") {
-      toast.error("interest is required!", {
-        position: "top-center",
-      });
-    }
-    else if (image === "") {
-      toast.error("image is required!", {
-        position: "top-center",
-      });
-    }
+   
     else {
       try {
         let data = JSON.stringify({
-          name,
-          position,
-          language,
-          location,
-          salary,
-          number,workingForm,sex,experience,
-          detailLocation,
-          detailJob,
-          requirements,
-          interest,
-          image
+         
+          "jobPostId":jobName,
+          "roomName": roomName,
+          "roomSkill":roomSkill,
+          "roomDescription": roomDescription,
+          "startDate": startDate,
+          "endDate": endDate,
+          "linkmeet": linkmeet
           
         });
   
         let config = {
           method: 'post',
           maxBodyLength: Infinity,
-          url: `http://localhost:8080/job-posting`,
+          url: `http://localhost:8080/interview/create-interview`,
           headers: { 
             'Content-Type': 'application/json', 
             'Authorization': `Bearer ${accessToken}`
@@ -146,15 +101,15 @@ const RoomAdd = () => {
         })
         .catch((error) => {
           console.log(error);
-          toast.error("Upload Job Failed", {
+          toast.error("Upload Room Failed", {
             position: "top-center",
           });
         });
   
-        toast.success("Upload Job Successfuly", {
+        toast.success("Upload Room Successfuly", {
           position: "top-center",
         });
-        navigate("/job-posting");
+        navigate("/");
       } catch (error) {
        
       }
@@ -184,14 +139,17 @@ const RoomAdd = () => {
             
               
               <div className="form_input">
-                <label htmlFor="name">Tên công việc</label>
-                <input
-                  type="text"
-                  // value={email}
-                  onChange={(e) => setName(e.target.value)}
-                  name="name"
-                  id="Name"
-                />
+                <label htmlFor="name" style={{display:"block"}}>Tên công việc</label>
+                <select style={{marginTop:"10px",marginBottom:"10px"}} onChange={(e) => 
+                 { console.log(e.target.value)
+                  setJObName(e.target.value)}}
+                  
+                  >
+                  {data.map((i)=>{
+                    return <option value={i.id}>{i.name}</option>
+                  })
+                  }
+                </select>
                 
               </div>
               
@@ -201,7 +159,7 @@ const RoomAdd = () => {
                 <input
                   type="text"
                   // value={username}
-                  onChange={(e) => setPosition(e.target.value)}
+                  onChange={(e) => setRoomName(e.target.value)}
                   name="position"
                   id="position"
                 />
@@ -211,7 +169,7 @@ const RoomAdd = () => {
                 <input
                   type="text"
                   // value={username}
-                  onChange={(e) => setPosition(e.target.value)}
+                  onChange={(e) => setRoomSkill(e.target.value)}
                   name="position"
                   id="position"
                 />
@@ -222,7 +180,7 @@ const RoomAdd = () => {
                 <input
                   type="text"
                   // value={username}
-                  onChange={(e) => setPosition(e.target.value)}
+                  onChange={(e) => setRoomDescription(e.target.value)}
                   name="position"
                   id="position"
                 />
@@ -234,7 +192,7 @@ const RoomAdd = () => {
                 <input
                   type="text"
                   // value={username}
-                  onChange={(e) => setPosition(e.target.value)}
+                  onChange={(e) => setStartDate(e.target.value)}
                   name="position"
                   id="position"
                 />
@@ -249,7 +207,7 @@ const RoomAdd = () => {
                 <input
                   type="text"
                   // value={username}
-                  onChange={(e) => setPosition(e.target.value)}
+                  onChange={(e) => setEndDate(e.target.value)}
                   name="position"
                   id="position"
                 />
@@ -260,7 +218,7 @@ const RoomAdd = () => {
                 <input
                   type="text"
                   // value={username}
-                  onChange={(e) => setPosition(e.target.value)}
+                  onChange={(e) => setLinkmeet(e.target.value)}
                   name="position"
                   id="position"
                 />

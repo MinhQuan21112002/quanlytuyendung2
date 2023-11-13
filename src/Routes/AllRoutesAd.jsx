@@ -34,8 +34,8 @@ const AllRoutesAd = () => {
 
         {/* pages  */}
         <Route path="/orders" element={<Orders />} />
-        <Route path="/employees" element={<Employees />} />
-        <Route path="/customers" element={<Customers />} />
+        <Route path="/interviewer" element={<Employees />} />
+        <Route path="/reccer" element={<Customers />} />
 
         {/* apps  */}
         <Route path="/kanban" element={<Kanban />} />

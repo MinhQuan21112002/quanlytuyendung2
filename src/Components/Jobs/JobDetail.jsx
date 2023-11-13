@@ -10,7 +10,7 @@ import {
     AlertTitle,
     AlertDescription,
   } from '@chakra-ui/react'
-  
+import axios from "axios";
 import { useDispatch, useSelector } from 'react-redux';
 import {
     AlertDialog,
@@ -20,7 +20,38 @@ import {
     AlertDialogContent,
     AlertDialogOverlay,
   } from '@chakra-ui/react'
+  
+import { ToastContainer, toast } from "react-toastify";
+
 function JobDetail() {
+    const accessToken = JSON.parse(localStorage.getItem("data"))!==null?JSON.parse(localStorage.getItem("data")).access_token:null;
+    const submitHandler=async (e) => {
+        console.log( e.target.value)
+        const jobId=e.target.value;
+        try {
+           
+            const{Data}=await axios.post('http://localhost:8080/apply-job',  jobId , {
+                headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': 'application/json',
+                },
+              });
+            console.log("user login succesfully done");
+            
+            toast.success("Apply Job Successfully", {
+                position: "top-center",
+              });
+          } catch (error) {
+           
+            toast.error(error, {
+              position: "top-center",
+            });
+          
+          }
+       
+    }
+
+
     const params = useParams()
     const { isOpen, onOpen, onClose } = useDisclosure()
     const cancelRef = React.useRef()
@@ -36,6 +67,7 @@ function JobDetail() {
 
     return (
         <Box >
+          
             <Text mb='100px'>hello</Text>
             <Box display='flex' justifyContent='space-evenly'>
                 <Box w='850px' >
@@ -51,7 +83,7 @@ function JobDetail() {
             
             </Box>
             <Box>
-            <Button width='100px' bg='blue.400' onClick={onOpen}>Apply</Button>
+            <Button width='100px' bg='blue.400' value={data.id} onClick={submitHandler}>Apply</Button>
       <AlertDialog
         motionPreset='slideInBottom'
         leastDestructiveRef={cancelRef}
@@ -178,6 +210,7 @@ function JobDetail() {
 
                 </Box>
             </Box>
+            <ToastContainer />
         </Box>
         
     )

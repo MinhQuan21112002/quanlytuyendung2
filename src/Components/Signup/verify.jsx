@@ -11,57 +11,26 @@ import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import "./Both.css";
 
-const Signup = () => {
+const Verify = () => {
+    toast.warn("Vui lòng nhập mã xác nhận", {
+        position: "top-center",
+      });
   const [passShow, setPassShow] = useState(false);
   const [cpassShow, setCPassShow] = useState(false);
   const navigate = useNavigate();
-
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   // =============================================================================================================
 
-  const [email, setEmail] = useState("");
-  const [username, setName] = useState("");
-  const [password, setPassword] = useState("");
-    const [confirmpassword, setConfirmPassword] = useState("");
-    const [phone, setPhone] = useState("");
-    const [picMessage, setPicMessage] = useState(null);
-    const [error, setError] = useState(false);
-    const [loading, setLoading] = useState(false);
+  const [codeVerify, setCodeVerify] = useState("");
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (username === "") {
-      toast.warning("name is required!", {
+    if (codeVerify === "") {
+      toast.warning("codeVerify is required!", {
         position: "top-center",
       });
-    } else if (email === "") {
-      toast.error("email is required!", {
-        position: "top-center",
-      });
-    } else if (!email.includes("@")) {
-      toast.warning("includes @ in your email!", {
-        position: "top-center",
-      });
-    } else if (password === "") {
-      toast.error("password is required!", {
-        position: "top-center",
-      });
-    } else if (password.length < 6) {
-      toast.error("password must be 6 char!", {
-        position: "top-center",
-      });
-      alert("add password more than 6");
-    } else if (confirmpassword === "") {
-      toast.error("confirmPassword is required!", {
-        position: "top-center",
-      });
-    } else if (confirmpassword.length < 6) {
-      toast.error("confirm password must be 6 char!", {
-        position: "top-center",
-      });
-    } else if (password !== confirmpassword) {
-      toast.error("pass and conformPass are not matching!", {
-        position: "top-center",
-      });
-    } 
+    }
     else {
       try {
         const config = {
@@ -73,7 +42,7 @@ const Signup = () => {
 
         const { data } = await axios.post(
           "http://localhost:8080/auth/register",
-          { username, email, password },
+         
           config
         );
         console.log(data);
@@ -82,17 +51,12 @@ const Signup = () => {
           position: "top-center",
         });
         else{
-          const { verify } = await axios.post(
-            "http://localhost:8080/auth/send-otp",
-            { email },
-            config
-          );
           localStorage.setItem("userInfo", JSON.stringify(data));
           toast.success(data.message, {
             position: "top-center",
           });
           setTimeout(() => {
-            navigate("/verify");
+            navigate("/mainhome");
        }, 2000);
          
         }
@@ -108,7 +72,7 @@ const Signup = () => {
       }
     }
   };
-
+ 
   return (
     <>
       <session>
@@ -202,78 +166,23 @@ const Signup = () => {
                   marginLeft: "-40%",
                 }}
               >
-                Find a job & grow your career
+                Nhập mã xác nhận từ mail
               </h2>
             </div>
             <form>
               <div className="form_input_name">
-                <label htmlFor="name">Please Enter Full Name</label>
+                <label htmlFor="name">Please Enter verify code</label>
                 <input
-                  type="name"
-                  value={username}
-                  onChange={(e) => setName(e.target.value)}
-                  name="name"
-                  id="name"
+                  type="verify"
+                  onChange={(e) => setCodeVerify(e.target.value)}
+                  name="verify"
+                  id="verify"
                   placeholder="Enter Your Name "
                 />
               </div>
-              
-              <div className="form_input">
-                <label htmlFor="email">Email/username</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  name="email"
-                  id="Email"
-                  placeholder="Enter Your email here "
-                />
-                
-              </div>
-
-              <div className="form_input">
-                <label htmlFor="password">Password</label>
-                <div className="two">
-                  <input
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    type={!passShow ? "password" : "text"}
-                    name="password"
-                    id="password1"
-                    placeholder="Enter Your password"
-                  />
-                  <div
-                    className="showpass1"
-                    onClick={() => setPassShow(!passShow)}
-                  >
-                    {!passShow ? "Show" : "Hide"}
-                  </div>
-                </div>
-               
-              </div>
-              <div className="form_input">
-                <label htmlFor="password1">Conform Password</label>
-                <div className="two">
-                  <input
-                    value={confirmpassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    type={!cpassShow ? "password" : "text"}
-                    name="cpassword"
-                    id="password"
-                    placeholder="Enter Your password"
-                  />
-                  <div
-                    className="showpass1"
-                    onClick={() => setCPassShow(!cpassShow)}
-                  >
-                    {!cpassShow ? "Show" : "Hide"}
-                  </div>
-                </div>
-               
-              </div>
-             
+           
               <button onClick={handleSubmit} className="btn3">
-                Register Now
+                Xác thực
               </button>
             </form>
             <ToastContainer />
@@ -284,4 +193,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Verify;

@@ -2,6 +2,7 @@ import React from 'react';
 import { AiOutlineCalendar, AiOutlineShoppingCart, AiOutlineAreaChart, AiOutlineBarChart, AiOutlineStock } from 'react-icons/ai';
 import { FiShoppingBag, FiEdit, FiPieChart, FiBarChart, FiCreditCard, FiStar, FiShoppingCart } from 'react-icons/fi';
 import { BsKanban, BsBarChart, BsBoxSeam, BsCurrencyDollar, BsShield, BsChatLeft } from 'react-icons/bs';
+import { MdAccessibilityNew } from "react-icons/md";
 import { BiColorFill } from 'react-icons/bi';
 import { IoMdContacts } from 'react-icons/io';
 import { RiContactsLine, RiStockLine } from 'react-icons/ri';
@@ -10,6 +11,7 @@ import { HiOutlineRefresh } from 'react-icons/hi';
 import { TiTick } from 'react-icons/ti';
 import { GiLouvrePyramid } from 'react-icons/gi';
 import { GrLocation } from 'react-icons/gr';
+import {  Button } from "@chakra-ui/react"
 import avatar from './avatar.jpg';
 import avatar2 from './avatar2.jpg';
 import avatar3 from './avatar3.png';
@@ -27,6 +29,8 @@ import { useEffect } from "react";
 import { loadRoom } from '../redux/Room/Action';
 import { loadInterviewer } from '../redux/Interviewer/Action';
 
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 export const gridOrderImage = (props) => (
   <div>
     <img
@@ -69,10 +73,10 @@ const gridEmployeeProfile = (props) => (
   <div className="flex items-center gap-2">
     <img
       className="rounded-full w-10 h-10"
-      src={props.EmployeeImage}
+      src={props.avatar}
       alt="employee"
     />
-    <p>{props.Name}</p>
+    <p>{props.fullName}</p>
   </div>
 );
 
@@ -125,25 +129,73 @@ export const EditorData = () => (
   </div>
 );
 const customerGridImage = (props) => (
-  <div className="image flex gap-4">
+  <div className="image flex items-center gap-2">
     <img
       className="rounded-full w-10 h-10"
-      src={props.CustomerImage}
+      src={props.avt}
       alt="employee"
     />
     <div>
-      <p>{props.CustomerName}</p>
-      <p>{props.CustomerEmail}</p>
+      <p>{props.name}</p>
+      <p>{props.email}</p>
     </div>
   </div>
 );
 
 const customerGridStatus = (props) => (
   <div className="flex gap-2 justify-center items-center text-gray-700 capitalize">
-    <p style={{ background: props.StatusBg }} className="rounded-full h-3 w-3" />
-    <p>{props.Status}</p>
+    {props.status!=="BLACKLIST"?
+    <p style={{ background: "#8BE78B" }} className="rounded-full h-3 w-3" />
+    :
+    <p style={{ background: "#FF0000" }} className="rounded-full h-3 w-3" />
+}
+    <p>{props.status}</p>
   </div>
 );
+const ButtonAddBlackList = (props) => {
+  const accessToken = JSON.parse(localStorage.getItem("data"))!==null?JSON.parse(localStorage.getItem("data")).access_token:null;
+  const navigate = useNavigate();
+  const HandleOnClick=(e)=>{
+    console.log("ga qua",e.target.value);
+
+    let data =JSON.stringify({
+
+      "userId": e.target.value,
+      "description": "string"
+      
+    });
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'http://localhost:8080/blacklist',
+      headers: { 
+        'Content-Type': 'application/json', 
+        'Authorization': `Bearer ${accessToken}`
+      },
+      data:data
+    };
+    
+    axios.request(config)
+    .then((response) => {
+    })
+    .catch((error) => {
+      console.log(error);
+      // toast.error("Add BList Failed", {
+      //   position: "top-center",
+      // });
+    });
+
+    // toast.success("Add BList Successfully", {
+    //   position: "top-center",
+    // });
+    window.location.replace('http://localhost:3000/reccer');
+  }
+  return(
+   <Button value={props.id} onClick={HandleOnClick}>
+   Add BList
+  </Button>
+  )
+  };
 export const areaPrimaryXAxis = {
   valueType: 'DateTime',
   labelFormat: 'y',
@@ -396,81 +448,52 @@ export const LinePrimaryYAxis = {
 };
 
 export const customersGrid = [
-  { type: 'checkbox', width: '50' },
   { headerText: 'Name',
     width: '150',
     template: customerGridImage,
     textAlign: 'Center' },
-  { field: 'ProjectName',
-    headerText: 'Project Name',
+  { field: 'dateRegister',
+    headerText: 'Ngày đăng ký',
     width: '150',
     textAlign: 'Center' },
-  { field: 'Status',
+  { field: 'status',
     headerText: 'Status',
     width: '130',
     format: 'yMd',
     textAlign: 'Center',
     template: customerGridStatus },
   {
-    field: 'Weeks',
-    headerText: 'Weeks',
+    field: 'phone',
+    headerText: 'Phone',
     width: '100',
     format: 'C2',
-    textAlign: 'Center' },
-  { field: 'Budget',
-    headerText: 'Budget',
+    textAlign: 'Center' }
+  ,{
+    field: 'button',
+    headerText: 'Thêm bào BList',
     width: '100',
-    format: 'yMd',
-    textAlign: 'Center' },
-
-  { field: 'Location',
-    headerText: 'Location',
-    width: '150',
-    textAlign: 'Center' },
-
-  { field: 'CustomerID',
-    headerText: 'Customer ID',
-    width: '120',
-    textAlign: 'Center',
-    isPrimaryKey: true,
-  },
+    format: 'C2',
+    textAlign: 'Center' ,
+    template: ButtonAddBlackList}
 
 ];
 
 export const employeesGrid = [
-  { headerText: 'Employee',
+  { headerText: 'Interviewer',
     width: '150',
     template: gridEmployeeProfile,
     textAlign: 'Center' },
-  { field: 'Name',
-    headerText: '',
-    width: '0',
-    textAlign: 'Center',
-  },
-  { field: 'Title',
-    headerText: 'Designation',
+  
+  { field: 'email',
+    headerText: 'Email',
     width: '170',
     textAlign: 'Center',
   },
-  { headerText: 'Country',
+  { headerText: 'Username',
     width: '120',
     textAlign: 'Center',
-    template: gridEmployeeCountry },
-
-  { field: 'HireDate',
-    headerText: 'Hire Date',
-    width: '135',
-    format: 'yMd',
-    textAlign: 'Center' },
-
-  { field: 'ReportsTo',
-    headerText: 'Reports To',
-    width: '120',
-    textAlign: 'Center' },
-  { field: 'EmployeeID',
-    headerText: 'Employee ID',
-    width: '125',
-    textAlign: 'Center' },
+    field: 'username'
+  }
 ];
 
 export const links = [
@@ -487,16 +510,19 @@ export const links = [
   {
     title: 'Pages',
     links: [
-      {
+     {
+      title:"orders",
         name: 'orders',
         icon: <AiOutlineShoppingCart />,
       },
       {
-        name: 'employees',
+        title:"Người phỏng vấn",
+        name: 'interviewer',
         icon: <IoMdContacts />,
       },
       {
-        name: 'customers',
+        title:"Nhà tuyển dụng",
+        name: 'reccer',
         icon: <RiContactsLine />,
       },
     ],
@@ -505,18 +531,22 @@ export const links = [
     title: 'Apps',
     links: [
       {
+        title:"Người phỏng vấn",
         name: 'calendar',
         icon: <AiOutlineCalendar />,
       },
       {
+        title:"Người phỏng vấn",
         name: 'kanban',
         icon: <BsKanban />,
       },
       {
+        title:"Người phỏng vấn",
         name: 'editor',
         icon: <FiEdit />,
       },
       {
+        title:"Người phỏng vấn",
         name: 'color-picker',
         icon: <BiColorFill />,
       },
@@ -526,23 +556,28 @@ export const links = [
     title: 'Charts',
     links: [
       {
+        title:"Người phỏng vấn",
         name: 'line',
         icon: <AiOutlineStock />,
       },
       {
+        title:"Người phỏng vấn",
         name: 'area',
         icon: <AiOutlineAreaChart />,
       },
 
       {
+        title:"Người phỏng vấn",
         name: 'bar',
         icon: <AiOutlineBarChart />,
       },
       {
+        title:"Người phỏng vấn",
         name: 'pie',
         icon: <FiPieChart />,
       },
       {
+        title:"Người phỏng vấn",
         name: 'financial',
         icon: <RiStockLine />,
       },
@@ -551,10 +586,12 @@ export const links = [
         icon: <BsBarChart />,
       },
       {
+        title:"Người phỏng vấn",
         name: 'pyramid',
         icon: <GiLouvrePyramid />,
       },
       {
+        title:"Người phỏng vấn",
         name: 'stacked',
         icon: <AiOutlineBarChart />,
       },

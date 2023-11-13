@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Image } from '@chakra-ui/react'
 import { Link } from "react-router-dom";
 import { Box } from "@mui/material";
@@ -7,11 +7,18 @@ import axios from "axios";
 import "./Both.css";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import "react-toastify/dist/ReactToastify.css";
-
+// import "react-toastify/dist/ReactToastify.css";
+import { useDispatch,useSelector } from "react-redux";
+import { loadUserInfo } from '../../redux/UserInfo/Action';
 const UserInfo = () => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("data")).data;
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    
+    dispatch(loadUserInfo());
+  }, []);
+  const user = useSelector((store) => store.userInfo.data);
 
   const accessToken = JSON.parse(localStorage.getItem("data")).access_token;
   
@@ -21,16 +28,30 @@ const UserInfo = () => {
   const [newPassword2, setNewPassword2] = useState("");
 
   const [email, setEmail] = useState(user.email);
-  const [fullName, setFullName] = useState(user.userInfo.fullName);
-  const [address, setAddress] = useState(user.userInfo.address);
-  const [phone, setPhone] = useState(user.userInfo.phone);
-
+  const [fullName, setFullName] = useState(user.fullName);
+  const [address, setAddress] = useState(user.address);
+  const [phone, setPhone] = useState(user.phone);
+  const [gender, setGender] = useState(user.gender);
+  const [cv_pdf, setCv_pdf] = useState(user.cv_pdf);
+  const [language, setLanguage] = useState(user.language);
+  const [skill, setSkill] = useState(user.skill);
+  const [experience, setExperience] = useState(user.experience);
+  const [description, setDescription] = useState(user.description);
+  const [avatar, setAvatar] = useState(user.avatar);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  console.log(oldPassword);
-  console.log(newPassword1);
-  console.log(newPassword2);    
+  const [testAva, setTestAva] = useState("");
+  const [testCV, setTestCV] = useState("");
+  const [imageDataCV, setImageDataCV] = useState();
+  const [imageDataAva, setImageDataAva] = useState(user.description);
+  
+
  
+
+ console.log("CV",cv_pdf)
+ console.log("ava",avatar)
+ console.log("testAva",testAva)
+ console.log("testCV",testCV)
   const submitHandlerPassword = async (e) => {
     e.preventDefault();
     if (oldPassword === "") {
@@ -95,27 +116,69 @@ const UserInfo = () => {
     });
     navigate("/userInfo");
   }
-  const submitHandler = async (e) => {
+  const SubmitHandler = async (e) => {
     e.preventDefault();
-    console.log(email);
-    console.log(fullName);
-    console.log(address); 
-    console.log(phone );
-    console.log(user.userInfo.id );
-    console.log(accessToken);
+   
     try{
       
+      if(testCV!==""||testCV!==null)
+      {
+      const formDataCV = new FormData()
+      formDataCV.append("file", testCV)
+      
+      const imageResponseCV = await axios.post(
+          "http://localhost:8080/file/upload",
+          formDataCV,
+          {
+              headers: {
+                  Authorization: `Bearer ${accessToken}`,
+              },
+          }
+      )
+     
+      setCv_pdf(imageResponseCV.data.data); 
+      console.log(cv_pdf)
+        }
+
+      if(testAva!==""||testAva!==null)
+      {
+      const formDataAva = new FormData()
+      formDataAva.append("file", testAva)
+
+      const imageResponseAva = await axios.post(
+          "http://localhost:8080/file/upload",
+          formDataAva,
+          {
+              headers: {
+                  Authorization: `Bearer ${accessToken}`,
+              },
+          }
+      )
+    
+        setAvatar(imageResponseAva.data.data)
+        console.log(avatar)
+      }
+
+
       let data = JSON.stringify({
-        fullName,
-        email,
-        phone,
-        address
+        "fullName": fullName,
+        "email": email,
+        "phone": phone,
+        "gender": gender,
+        "address": address ,
+        "dob": "",
+        "cv_pdf": cv_pdf,
+        "avatar": avatar,
+        "language": language,
+        "skill": skill,
+        "experience": experience,
+        "description": description
       });
 
       let config = {
         method: 'put',
         maxBodyLength: Infinity,
-        url: `http://localhost:8080/user/${user.userInfo.id}`,
+        url: `http://localhost:8080/profile`,
         headers: { 
           'Content-Type': 'application/json', 
           'Authorization': `Bearer ${accessToken}`
@@ -148,16 +211,13 @@ const UserInfo = () => {
     <section className="login_section">
   
       <div style={{ display: "flex" }}>
-        <Box className="left_section" elevation={4}>
+        <div className="left_section" elevation={5}>
           <div style={{ marginLeft: "10px" }}>
             <h2>Thông tin cá nhân</h2>
-            <Image mr={'8px'} w={'20px'} h={'20px'} src={user.userInfo.avatar} />
+            <Image mr={'8px'} w={'100px'} h={'100px'} src={avatar} />
           
-            <p>
-              <DoneIcon style={{ color: "#4a90e2", marginTop: "2%" }} />
-              Username : {user.username}
-            </p>
-
+          
+          
             <div className="form_input">
               
             <label htmlFor="email">  <p style={{marginRight: "5px" ,width:"130px"}}>
@@ -215,7 +275,124 @@ const UserInfo = () => {
                   
                 />
               </div>    
-              <button className="btn-update" onClick={submitHandler} >
+
+              <div className="form_input">
+              
+              <label htmlFor="phone">  <p style={{marginRight: "5px",width:"130px" }}>
+                <DoneIcon style={{ color: "#4a90e2", marginTop: "2%" }} />
+                Giới tính </p></label>
+                
+                <input
+                  type="text"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  name="sex"
+                  id="sex"
+                  
+                />
+              </div>    
+
+              <div className="form_input">
+              
+              <label htmlFor="phone">  <p style={{marginRight: "5px",width:"130px" }}>
+                <DoneIcon style={{ color: "#4a90e2", marginTop: "2%" }} />
+                Ngôn ngữ </p></label>
+                
+                <input
+                  type="text"
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                  name="language"
+                  id="language"
+                  
+                />
+              </div>    
+
+              
+              <div className="form_input">
+              
+              <label htmlFor="phone">  <p style={{marginRight: "5px",width:"130px" }}>
+                <DoneIcon style={{ color: "#4a90e2", marginTop: "2%" }} />
+                Kỹ năng </p></label>
+                
+                <input
+                  type="text"
+                  value={skill}
+                  onChange={(e) => setSkill(e.target.value)}
+                  name="skill"
+                  id="skill"
+                  
+                />
+              </div>    
+
+
+              <div className="form_input">
+              
+              <label htmlFor="phone">  <p style={{marginRight: "5px",width:"130px" }}>
+                <DoneIcon style={{ color: "#4a90e2", marginTop: "2%" }} />
+                Kinh nghiệm </p></label>
+                
+                <input
+                  type="text"
+                  value={experience}
+                  onChange={(e) => setExperience(e.target.value)}
+                  name="experience"
+                  id="experience"
+                  
+                />
+              </div>   
+
+
+                  <div className="form_input">
+              
+              <label htmlFor="phone">  <p style={{marginRight: "5px",width:"130px" }}>
+                <DoneIcon style={{ color: "#4a90e2", marginTop: "2%" }} />
+                Mô tả </p></label>
+                
+                <input
+                  type="text"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  name="description"
+                  id="description"
+                  
+                />
+              </div>    
+
+              <div className="form_input">
+              
+              <label htmlFor="phone">  <p style={{marginRight: "5px",width:"130px" }}>
+                <DoneIcon style={{ color: "#4a90e2", marginTop: "2%" }} />
+                CV </p></label>
+                
+                <input
+                  type="file"
+                  
+                  onChange={(e) => setTestCV(e.target.files[0])}
+                  name="cv_pdf"
+                  id="cv_pdf"
+                  
+                />
+              </div>    
+              
+              
+              <div className="form_input">
+              
+              <label htmlFor="phone">  <p style={{marginRight: "5px",width:"130px" }}>
+                <DoneIcon style={{ color: "#4a90e2", marginTop: "2%" }} />
+                Avartar </p></label>
+                
+                <input
+                  type="file"
+                  onChange={(e) => setTestAva(e.target.files[0])}
+                  name="avatar"
+                  id="avatar"
+                  
+                />
+              </div>    
+              
+
+              <button className="btn-update" onClick={SubmitHandler} >
               Cập nhật thông tin
             </button>    
           </div>
@@ -231,7 +408,7 @@ const UserInfo = () => {
             style={{ width: "40%", marginLeft: "45%", marginBottom: "10%" }}
             alt=""
           />
-        </Box>
+        </div>
         <div className="form_data">
           <div className="form_heading">
             <p>Thay đổi mật khẩu</p>

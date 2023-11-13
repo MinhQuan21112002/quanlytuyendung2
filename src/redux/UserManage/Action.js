@@ -1,16 +1,15 @@
 import {
-    USER_INFO_REQUERST,
-    USER_INFO_SUCCESS,
-    USER_INFO_ERROR
+    USER_MANAGE_REQUERST,
+    USER_MANAGE_SUCCESS,
+    USER_MANAGE_ERROR
 } from './ActionType';
 import axios from "axios";
 
 
-export const loadUserInfo=(id)=>async (dispatch)=>{
+export const loadUserManage=(id)=>async (dispatch)=>{
 
     const accessToken= JSON.parse(localStorage.getItem("data")).access_token;
-    console.log(accessToken)
-    dispatch({type:USER_INFO_REQUERST});
+    dispatch({type:USER_MANAGE_REQUERST});
        
         try {
             let data = '';
@@ -18,7 +17,7 @@ export const loadUserInfo=(id)=>async (dispatch)=>{
             let config = {
               method: 'get',
               maxBodyLength: Infinity,
-              url: "http://localhost:8080/profile",
+              url: "http://localhost:8080/user",
               headers: { 
                 'Content-Type': 'application/json', 
                 'Authorization': `Bearer ${accessToken}`
@@ -27,9 +26,8 @@ export const loadUserInfo=(id)=>async (dispatch)=>{
             };
             axios.request(config)
             .then((response) => {
-                console.log("haha");
-                dispatch({type: USER_INFO_SUCCESS,payload : response.data.data});
-                console.log("in the logi func try",response.data.data);
+                dispatch({type: USER_MANAGE_SUCCESS,payload : response.data.data});
+             
               })
               .catch((error) => {
                 console.log(error);
@@ -38,6 +36,6 @@ export const loadUserInfo=(id)=>async (dispatch)=>{
       
         } catch (error) {
             // console.log("in the logi func catch");
-            dispatch({type:USER_INFO_ERROR,payload : error.message});
+            dispatch({type:USER_MANAGE_ERROR,payload : error.message});
         }
 }

@@ -10,6 +10,7 @@ import Login from "../Components/Login/Login";
 import MainHomepage from "../Components/MainHome/MainHomepage";
 import ServicesPage from "../Components/Services/ServicesPage";
 import Signup from "../Components/Signup/Signup";
+import Verify from "../Components/Signup/verify";
 import Logout from "../Components/Logout/Logout";
 import UserInfo from "../Components/UserInfo/UserInfo"; 
 import JobPosting from "../Components/Job-recruiter/Job-Posting"; 
@@ -21,6 +22,7 @@ const AllRoutes = () => {
       <Route path='/jobDetail_Recruiter/:id' element={<JobDetailRecruiter/>} />
       <Route path='/allJob_Recruiter/' element={<AllJob/>} />
 
+      <Route path='/verify/' element={<Verify/>} />
       
       <Route path='/job-posting/' element={<JobPosting/>} />
       <Route path='/userInfo/' element={<UserInfo/>} />

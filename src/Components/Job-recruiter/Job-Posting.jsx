@@ -127,9 +127,21 @@ const JobPosting = () => {
       try {
        
         console.log("image", image)
-      
+        const formData = new FormData()
+        formData.append("file", image)
+
+        const imageResponse = await axios.post(
+            "http://localhost:8080/file/upload",
+            formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        )
+        const imageData= imageResponse.data.data
        
-        console.log(image);
+        console.log("hình anh tren firebase",imageResponse)
         let data = JSON.stringify({
           name,
           position,
@@ -141,7 +153,7 @@ const JobPosting = () => {
           detailJob,
           requirements,
           interest,
-          image
+          "image":imageData
           
         });
   
@@ -415,7 +427,7 @@ const JobPosting = () => {
                 <input
                   type="file"
                   // value={email}
-                  onChange={(e) => handleUpload(e)}
+                  onChange={(e) => setImage(e.target.files[0])}
                   name="image"
                   id="image"
                 />

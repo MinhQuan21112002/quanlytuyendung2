@@ -11,12 +11,16 @@ import {JobReducer} from "./Job-posting/Reducer";
 import { JobDetailReducer } from "./JobDetail/Reducer";
 import {RoomReducer} from "./Room/Reducer";
 import {InterviewerReducer} from "./Interviewer/Reducer";
+import {UserInfoReducer} from "./UserInfo/Reducer";
+import {UserManageReducer} from "./UserManage/Reducer";
 const rootReducer = combineReducers({
     AuthManager: Authreducer,
     job:JobReducer,
     jobDetail:JobDetailReducer,
     room:RoomReducer,
-    interviewer:InterviewerReducer
+    interviewer:InterviewerReducer,
+    userInfo:UserInfoReducer,
+    allUser:UserManageReducer
   });
   const composer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
