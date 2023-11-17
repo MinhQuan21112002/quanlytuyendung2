@@ -21,6 +21,18 @@ import {
     RoomList
   } from "../pages-admin";
 import RoomAdd from "../pages-admin/RoomEdit/RoomAdd"
+import { K_Event } from "../pages-admin/K_Event/K_Event";
+import { EventAdd } from "../pages-admin/K_Event/EventAdd";
+import { EventEdit } from "../pages-admin/K_Event/EventEdit";
+import { PositionSkill } from "../pages-admin/PositionSkill/PositionSkill";
+import { EditSkill } from "../pages-admin/PositionSkill/EditSkill";
+import { AddSkill } from "../pages-admin/PositionSkill/AddSkill";
+import { AddPosition } from "../pages-admin/PositionSkill/AddPosition";
+import { EditPosition } from "../pages-admin/PositionSkill/EditPosition";
+import { Question } from "../pages-admin/Question/Question";
+import { AddQuestion } from "../pages-admin/Question/AddQuestion";
+import { EditQuestion } from "../pages-admin/Question/EditQuestion";
+import { Interview } from "../pages-admin/Interview/Interview";
 
 const AllRoutesAd = () => {
     return (
@@ -52,6 +64,21 @@ const AllRoutesAd = () => {
         <Route path="/color-mapping" element={<ColorMapping />} />
         <Route path="/pyramid" element={<Pyramid />} />
         <Route path="/stacked" element={<Stacked />} />
+
+        {/* khanh */}
+        <Route path="/event" element={<K_Event />} />
+        <Route path="/event/add" element={<EventAdd />} />
+        <Route path="/event/edit/:id" element={<EventEdit />} />
+        <Route path="/skill-position" element={<PositionSkill />} />
+        <Route path="/edit-skill/:id" element={<EditSkill />} />
+        <Route path="/add-skill" element={<AddSkill />} />
+        <Route path="/add-position" element={<AddPosition />} />
+        <Route path="/edit-position/:id" element={<EditPosition />} />
+        <Route path="/question" element={<Question />} />
+        <Route path="/question/add" element={<AddQuestion />} />
+        <Route path="/question/edit/:id" element={<EditQuestion />} />
+        <Route path="/interview" element={<Interview />} />
+
       </Routes>
     );
   };

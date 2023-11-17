@@ -1,6 +1,6 @@
 import React from 'react';
 import { AiOutlineCalendar, AiOutlineShoppingCart, AiOutlineAreaChart, AiOutlineBarChart, AiOutlineStock } from 'react-icons/ai';
-import { FiShoppingBag, FiEdit, FiPieChart, FiBarChart, FiCreditCard, FiStar, FiShoppingCart } from 'react-icons/fi';
+import { FiShoppingBag, FiEdit, FiPieChart, FiBarChart, FiCreditCard, FiStar, FiShoppingCart, FiBookOpen } from 'react-icons/fi';
 import { BsKanban, BsBarChart, BsBoxSeam, BsCurrencyDollar, BsShield, BsChatLeft } from 'react-icons/bs';
 import { MdAccessibilityNew } from "react-icons/md";
 import { BiColorFill } from 'react-icons/bi';
@@ -524,6 +524,26 @@ export const links = [
         title:"Nhà tuyển dụng",
         name: 'reccer',
         icon: <RiContactsLine />,
+      },
+      {
+        title:"Event",
+        name: 'event',
+        icon: <RiContactsLine/>,
+      },
+      {
+        title:"Position Skill",
+        name: 'skill-position',
+        icon: <RiContactsLine/>,
+      },
+      {
+        title:"Question",
+        name: 'question',
+        icon: <FiBookOpen />,
+      },
+      {
+        title:"Interview",
+        name: 'interview',
+        icon: <FiBookOpen />,
       },
     ],
   },

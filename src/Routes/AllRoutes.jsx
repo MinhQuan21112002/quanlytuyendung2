@@ -16,6 +16,9 @@ import UserInfo from "../Components/UserInfo/UserInfo";
 import JobPosting from "../Components/Job-recruiter/Job-Posting"; 
 import JobDetailRecruiter from "../Components/Job-recruiter/JobDetail"; 
 import AllJob from  "../Components/Job-recruiter/AllJob"; 
+import { Events } from "../Components/Events/Event";
+import { EventDetailHome } from "../Components/Events/EventDetailHome";
+import { CurriculumVitae } from "../Components/CVBuild/CurriculumVitae";
 const AllRoutes = () => {
   return (
     <Routes>
@@ -41,6 +44,11 @@ const AllRoutes = () => {
       <Route path='/jobpage' element={<JobPage />} />
       <Route path='/jobpage/:jobId' element={<JobDetail />} />
       <Route path='/services' element={<ServicesPage />} />
+
+      {/* khanhs */}
+      <Route path='/events' element={<Events />} />
+      <Route path='/event/:id' element={<EventDetailHome />} />
+      <Route path='/cv-build' element={<CurriculumVitae />} />
     </Routes>
   );
 };
